@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PG SOFT DEMO</title>
+    <link rel="shortcut icon" href="https://www.pgsoft.com/favicon.png" type="image/x-icon">
+    <style>
+        :root {
+            --primary-bg-color: #f5f5f5;
+            --secondary-bg-color: #cecece;
+            --border-color: #ccc;
+            --text-color: #181818;
+            --button-bg-color: #7700ff;
+            --button-hover-color: #4500b3;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: var(--primary-bg-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 45px;
+            margin-top: 35px;
+        }
+
+        .search-container img {
+            margin-left: 20px;
+            cursor: pointer;
+        }
+
+        #searchInput {
+            width: 285px;
+            height: 30px;
+            font-family: Arial, Helvetica, sans-serif;
+            outline: none;
+            border: none;
+            background-color: var(--secondary-bg-color);
+            padding-left: 10px;
+            color: var(--text-color);
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            transition: border 0.5s ease-in-out;
+        }
+
+        #searchInput:hover {
+            border: 1px solid #adadad;
+        }
+
+        #searchInput::placeholder {
+            color: var(--text-color);
+        }
+
+        .board {
+            display: grid;
+            align-items: center;
+            grid-template-columns: repeat(3, 0fr);
+
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .game-card {
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+            margin-top: 10px;
+            width: 244px;
+            height: 95px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+
+        .game-image {
+            min-width: 80px;
+            min-height: 80px;
+            max-width: 80px;
+            max-height: 80px;
+            width: 80px;
+            height: 80px;
+            margin-right: 20px;
+            border-radius: 20px;
+        }
+
+        .game-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .game-title {
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .play-button {
+            background-color: var(--button-bg-color);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .play-button:hover {
+            background-color: var(--button-hover-color);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            font-size: 25px;
+            color: #000000;
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                padding: 10px;
+            }
+
+            .search-container img {
+                margin-top: 5px;
+            }
+
+            #searchInput {
+                height: 30px;
+            }
+
+            .board {
+                grid-template-columns: repeat(1, 0fr);
+                padding: 10px;
+
+                max-width: 275px;
+            }
+
+            .game-card {
+                margin: 5px 0;
+            }
+
+            .game-image {
+                min-width: 60px;
+                min-height: 60px;
+                max-width: 60px;
+                max-height: 60px;
+                width: 60px;
+                height: 60px;
+                margin: 10px 0;
+                margin-right: 20px;
+            }
+
+            .game-title {
+                font-size: 14px;
+            }
+
+            .play-button {
+                padding: 8px 16px;
+                font-size: 12px;
+                margin-top: 8px;
+            }
+
+            footer {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Pesquisar jogo...">
+        <img src="https://www.pgsoft.com/_nuxt/img/Logo_small.23d0a2c.svg" alt="Lupa" id="searchButton">
+    </div>
+
+    <div class="board" id="gameBoard">
+    </div>
+
+    <footer>
+        ㅤ
+    </footer>
+
+    <script>
+        const baseLink = "https://m.pgsoft-games.com/";
+
+        const gameData = {
+            "39": "Piggy Gold",
+            "40": "Jungle Delight",
+            "42": "Ganesha Gold",
+            "48": "Double Fortune",
+            "53": "The Great Icescape",
+            "54": "Captains Bounty",
+            "57": "Dragon Hatch",
+            "60": "Leprechaun Riches",
+            "62": "Gem Saviour Conquest",
+            "65": "Mahjong Ways",
+            "67": "Shaolin Soccer",
+            "68": "Fortune Mouse",
+            "69": "Bikini Paradise",
+            "70": "Candy Burst",
+            "71": "Cai Shen Wins",
+            "73": "Egypts Book Mystery",
+            "74": "Mahjong Ways2",
+            "75": "Ganesha Fortune",
+            "82": "Phoenix Rises",
+            "83": "Wild Fireworks",
+            "84": "Queen Bounty",
+            "85": "Genies Wishes",
+            "86": "Galactic Gems",
+            "87": "Treasures Aztec",
+            "89": "Lucky Neko",
+            "93": "Opera Dynasty",
+            "98": "Fortune Ox",
+            "100": "Candy Bonanza",
+            "103": "Crypto Gold",
+            "104": "Wild Bandito",
+            "112": "Oriental Prosperity",
+            "120": "The Queens Banquet",
+            "121": "Destiny Sun & Moon",
+            "122": "Garuda Gems",
+            "123": "Rooster Rumble",
+            "124": "Battleground Royale",
+            "125": "Butterfly Blossom",
+            "126": "Fortune Tiger",
+            "127": "Speed Winner",
+            "128": "Legend Perseus",
+            "129": "Win Win Fish Prawn Crab",
+            "130": "Lucky Piggy",
+            "132": "Wild Coaster",
+            "135": "Wild Bounty Showdown",
+            "1312883": "Prosperity Fortune Tree",
+            "1338274": "Totem Wonders",
+            "1340277": "Asgardian Rising",
+            "1368367": "Alchemy Gold",
+            "1372643": "Diner Delights",
+            "1381200": "Hawaiian Tiki",
+            "1402846": "Midas Fortune",
+            "1418544": "Bakery Bonanza",
+            "1420892": "Rave Party Fever",
+            "1432733": "Mystical Spirits",
+            "1448762": "Songkran Splash",
+            "1513328": "Super Golf Drive",
+            "1543462": "Fortune Rabbit",
+            "1601012": "Lucky Clover Lady"
+        };
+
+        function checkImage(imageSrc, good, bad) {
+            var img = new Image();
+            img.onload = good;
+            img.onerror = bad;
+            img.src = imageSrc;
+        }
+
+        function createGameCard(id, name) {
+            const gameCard = document.createElement("div");
+            gameCard.className = "game-card";
+
+            const gameImageName = name.toLowerCase().replace(/ /g, '-');
+            const imageURL = `https://uol02g-375-ppp.oss-accelerate.aliyuncs.com/cocos/icon/14/PG_${id}.png`;
+            const altImageURL = `https://uol02g-375-ppp.oss-accelerate.aliyuncs.com/cocos/icon/14/PG_${gameImageName}.png`;
+
+            const gameImage = document.createElement("img");
+            gameImage.className = "game-image";
+
+            checkImage(imageURL, () => {
+                gameImage.src = imageURL;
+            }, () => {
+                gameImage.src = altImageURL;
+            });
+
+            const gameDetails = document.createElement("div");
+            gameDetails.className = "game-details";
+
+            const gameTitle = document.createElement("p");
+            gameTitle.className = "game-title";
+            gameTitle.textContent = name;
+
+            const playButton = document.createElement("button");
+            playButton.className = "play-button";
+            playButton.textContent = "Jogar";
+
+            playButton.addEventListener("click", () => {
+                const url = `${baseLink}${id}/index.html?l=en&ot=ca7094186b309ee149c55c8822e7ecf2&btt=2&from=https://pgdemo.asia/&language=th-TH&__refer=m.pg-redirect.net&or=static.pgsoft-games.com`;
+                window.location.href = url;
+            });
+
+            gameDetails.appendChild(gameTitle);
+            gameDetails.appendChild(playButton);
+
+            gameCard.appendChild(gameImage);
+            gameCard.appendChild(gameDetails);
+
+            return gameCard;
+        }
+
+
+        const searchInput = document.getElementById("searchInput");
+        searchInput.addEventListener("keyup", populateGameBoard);
+
+        function populateGameBoard() {
+            const gameBoard = document.getElementById("gameBoard");
+            const searchTerm = searchInput.value.toLowerCase();
+
+            gameBoard.innerHTML = "";
+
+            for (const id in gameData) {
+                const gameName = gameData[id].toLowerCase();
+                if (gameName.includes(searchTerm)) {
+                    const gameCard = createGameCard(id, gameData[id]);
+                    gameBoard.appendChild(gameCard);
+                }
+            }
+        }
+
+        populateGameBoard();
+    </script>
+</body>
+
+</html>
